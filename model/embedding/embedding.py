@@ -1,5 +1,6 @@
 import math
 import torch.nn as nn
+import torch
 
 class JamoEmbedding(nn.Module):
     def __init__(self, vocab_size = 54, embedding_dim = 512, pad_idx = 53):
@@ -9,4 +10,11 @@ class JamoEmbedding(nn.Module):
         self.embedding_dim = embedding_dim
 
     def forward(self, x):
+        print('hi')
         return self.embedding(x) * math.sqrt(self.embedding_dim)
+
+
+# random_tensor = torch.randint(51, 54, (32, 12)).to('cuda') # label (char_to_index 처리 되어있음)
+# Emb = JamoEmbedding().to('cuda')
+# embedded_tensor = Emb(random_tensor)
+# print(embedded_tensor.shape)

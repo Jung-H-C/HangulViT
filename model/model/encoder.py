@@ -45,13 +45,16 @@ class CNNEncoder(nn.Module):
             nn.MaxPool2d(kernel_size=4, stride=4) # [batch_size, 512, 11, 11]
         )
 
-    def forward(self, x):
-        x = self.conv1(x)
-        x = self.conv2(x)
-        x = self.conv3(x)
-        x = self.conv4(x)
+    def forward(self, image):
+        print('Cc')
+        out = self.conv1(image)
+        print('DD')
+        out = self.conv2(out)
+        out = self.conv3(out)
+        out = self.conv4(out)
+        print('EE')
 
-        return flatten_features(x) # [batch_size, 121, 512]
+        return flatten_features(out) # [batch_size, 121, 512]
 
 
 
