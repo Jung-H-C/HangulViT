@@ -62,8 +62,10 @@ def build_model(
 model = build_model(device = torch.device('cuda'), decoder = Decoder, embedding_dim = 512, vocab_size = 54)
 
 try:
-    output = model(random_image, random_input)
+    output, _ = model(random_image, random_input)
     print("성공!")
+    print("output: {}".format(output))
     print("출력 크기: {}".format(output.size()))
 except Exception as e:
     print(e)
+

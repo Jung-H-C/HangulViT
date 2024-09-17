@@ -31,8 +31,9 @@ class MultiHeadAttention(nn.Module):
         print("query의 size: {}".format(query.size()))
         scores = torch.matmul(query, key.transpose(-2, -1)) / math.sqrt(self.head_dim)
         print("scores의 size: {}".format(scores.size()))
+        # self-attention 때는 score 크기 [32, 1, 12, 12], cross-attention 때는 score 크기 [32, 1, 12, 121]
         if mask is not None:
-            scores = scores.masked_fill(mask == 0, -1e9) # 0인 부분을 -inf로 채움
+            scores = scores.masked_fill(mask == 0, -1e9) # mask가 0인 부분을 -inf로 채움
             print("mask done")
         attention_prob = F.softmax(scores, dim=-1)
 
