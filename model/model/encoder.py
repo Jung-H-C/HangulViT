@@ -1,5 +1,3 @@
-import copy
-import torch
 import torch.nn as nn
 
 
@@ -46,13 +44,10 @@ class CNNEncoder(nn.Module):
         )
 
     def forward(self, image):
-        print('Cc')
         out = self.conv1(image)
-        print('DD')
         out = self.conv2(out)
         out = self.conv3(out)
         out = self.conv4(out)
-        print('EE')
 
         return flatten_features(out) # [batch_size, 121, 512]
 

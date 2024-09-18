@@ -11,16 +11,16 @@ class Vocabulary:
 
     def process(self, label):
         label_indices = [self.jamo_to_index[char] for char in label]
-        print('a')
+        # print('a')
 
         input_label = [self.jamo_to_index['<sos>']] + label_indices
-        print('b')
+        # print('b')
         input_label = torch.tensor(input_label, dtype=torch.long)
-        print('c')
+        # print('c')
 
         output_label = label_indices + [self.jamo_to_index['<eos>']]
-        print('d')
+        # print('d')
         output_label = torch.tensor(output_label, dtype=torch.long)
-        print('e')
+        # print('e')
 
         return input_label, output_label

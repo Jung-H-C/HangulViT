@@ -25,13 +25,9 @@ class MultiHeadAttention(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def calculate_attention(self, query, key, value, mask=None, dropout=None):
-        # query, key, value의 input size = [n_batch, head, seq_len, head_dim]
-        # query의 size [n_batch, 1, 12, 512], key의 size [n_batch, 1, 121, 512]
-        print("key의 size: {}".format(key.size()))
-        print("query의 size: {}".format(query.size()))
+
         scores = torch.matmul(query, key.transpose(-2, -1)) / math.sqrt(self.head_dim)
-        print("scores의 size: {}".format(scores.size()))
-        # self-attention 때는 score 크기 [32, 1, 12, 12], cross-attention 때는 score 크기 [32, 1, 12, 121]
+
         if mask is not None:
             scores = scores.masked_fill(mask == 0, -1e9) # mask가 0인 부분을 -inf로 채움
             print("mask done")

@@ -73,6 +73,9 @@ images, input_labels, output_labels = next(iter(train_loader))
 
 # size: image [batch_size, 1, 360, 360], input_labels [batch_size, max_seq], output_labels [batch_size, max_seq]
 
-print(images.shape)
-print(input_labels.shape)
-print(output_labels.shape)
+def return_one_batch():
+    return images, input_labels, output_labels
+
+# print(images.shape)
+# print(input_labels.shape)
+# print(output_labels.shape)

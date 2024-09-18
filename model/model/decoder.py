@@ -12,9 +12,7 @@ class Decoder(nn.Module):
 
     def forward(self, input_label, encoder_out, self_mask, cross_mask):
         out = input_label
-        print('ii')
         for layer in self.layers: # layer가 하나의 decoder_block 단위임 (residual 3개)
-            print('i')
             out = layer(out, encoder_out, self_mask, cross_mask)
         # out = self.norm(out)
         return out

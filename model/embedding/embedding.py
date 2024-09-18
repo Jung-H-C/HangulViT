@@ -10,7 +10,6 @@ class JamoEmbedding(nn.Module):
         self.embedding_dim = embedding_dim
 
     def forward(self, x):
-        print('hi')
         return self.embedding(x) * math.sqrt(self.embedding_dim)
 
 
