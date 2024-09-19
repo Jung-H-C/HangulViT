@@ -10,22 +10,10 @@ from PIL import Image
 
 from Vocabulary import *
 
-
-img_dir = 'D:/dataset/13.한국어글자체/01.손글씨/image'
-label_file = 'D:/dataset/13.한국어글자체/01.손글씨/new_labels.csv'
-
 transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5, ), (0.5, ))
 ])
-
-def split_dataset(label_file, test_size, shuffle):
-    # Train, Test 데이터셋을 불러오는 함수
-    labels = pd.read_csv(label_file)
-
-    train_labels, test_labels = train_test_split(labels, test_size=test_size, shuffle=shuffle)
-
-    return train_labels, test_labels
 
 def collate_fn(batch, pad_idx):
     # pad_Sequence를 추가하는 함수
@@ -38,7 +26,6 @@ def collate_fn(batch, pad_idx):
     output_labels_padded = pad_sequence(output_labels, batch_first=True, padding_value=pad_idx)
 
     return images, input_labels_padded, output_labels_padded
-
 
 class HangulOCRDataset(Dataset):
     def __init__(self, img_dir, labels, transform = None):
@@ -63,19 +50,9 @@ class HangulOCRDataset(Dataset):
 
         return image, input_label, output_label
 
-# def return_one_batch():
-#     return images, input_labels, output_labels
+def return_one_batch():
+    return images, input_labels, output_labels
 
-import pickle
-# train_labels, test_labels = split_dataset(label_file, test_size = 0.2, shuffle = True)
-#
-with open('test_labels.pkl', 'wb') as f:
-    pickle.dump(test_labels, f)
-
-with open('test_labels.pkl', 'rb') as f:
-    test_labels = pickle.load(f)
-
-print(test_labels)
 
 # train_dataset = HangulOCRDataset(img_dir = img_dir, labels = train_labels, transform = transform)
 # test_dataset = HangulOCRDataset(img_dir = img_dir, labels = test_labels, transform = transform)
