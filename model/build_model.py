@@ -1,7 +1,5 @@
 import torch
 import torch.nn as nn
-from torchsummary import summary
-import copy
 
 from model.block.decoder_block import DecoderBlock
 from model.embedding.embedding import JamoEmbedding

@@ -83,11 +83,11 @@ class HangulViT(nn.Module):
 
         # print('ㅅ')
         mask.requires_grad = False
-        print('make_cross_mask_fin')
+
         return mask
 
     def forward(self, image, input_label):
-        print("batch input에 들어옴")
+
         image = image.to(self.device)
         input_label = input_label.to(self.device)
 

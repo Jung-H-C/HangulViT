@@ -3,6 +3,8 @@ import logging
 
 import torch
 from torch import nn, optim
+from metrics.char_error_rate import char_level_accuracy
+from model.config import *
 
 from build_model import build_model
 
@@ -43,7 +45,7 @@ def evaluate(model, data_loader, criterion):
     model.eval()
     epoch_loss = 0
 
-    total_bleu = []
+    total_cer = []
     with torch.no_grad():
         for idx, (image, input_label, output_label) in enumerate(data_loader):
             image = image.to(model.device)
@@ -55,3 +57,25 @@ def evaluate(model, data_loader, criterion):
             y_hat = output.contiguous().view(-1, output.shape[-1])
             y_gt = output_label.contiguous().view(-1)
             loss = criterion(y_hat, y_gt)
+
+            epoch_loss += loss.item()
+            CER = char_level_accuracy(y_hat, y_gt, PAD_TOKEN)
+            total_cer.append(CER)
+        num_samples = idx+1
+
+    loss_avr = epoch_loss / num_samples
+    cer = sum(total_cer) / len(total_cer)
+    return loss_avr, cer
+
+
+def main():
+    model = build_model()
+
+    def initialize_weights(model):
+        if hasattr(model, 'weight') and model.weight.dim() > 1:
+            nn.init.kaiming_uniform_(model.weight.data)
+
+        model.apply(initialize_weights)
+
+        optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY, eps=ADAM_EPS)
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer = optimizer, verbose = True, factor = SCHEDULER_FACTOR, patience = SCHEDULER_PATIENCE)
