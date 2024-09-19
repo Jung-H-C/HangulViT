@@ -75,7 +75,11 @@ def main():
         if hasattr(model, 'weight') and model.weight.dim() > 1:
             nn.init.kaiming_uniform_(model.weight.data)
 
-        model.apply(initialize_weights)
+    model.apply(initialize_weights)
 
-        optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY, eps=ADAM_EPS)
-        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer = optimizer, verbose = True, factor = SCHEDULER_FACTOR, patience = SCHEDULER_PATIENCE)
+    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY, eps=ADAM_EPS)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer = optimizer, verbose = True, factor = SCHEDULER_FACTOR, patience = SCHEDULER_PATIENCE)
+
+    criterion = nn.CrossEntropyLoss(ignore_index=PAD_TOKEN)
+
+    train_iter, valid_iter, test_iter =

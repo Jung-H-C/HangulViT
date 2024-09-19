@@ -13,3 +13,6 @@ SCHEDULER_FACTOR = 0.9
 SCHEDULER_PATIENCE = 10
 
 DROPOUT_RATE = 0.1
+
+IMG_DIR = 'D:/dataset/13.한국어글자체/01.손글씨/image'
+LABEL_FILE = 'D:/dataset/13.한국어글자체/01.손글씨/new_labels.csv'

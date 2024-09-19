@@ -1,4 +1,6 @@
 import os
+import pickle
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from torch.nn.utils.rnn import pad_sequence
@@ -61,16 +63,25 @@ class HangulOCRDataset(Dataset):
 
         return image, input_label, output_label
 
-def return_one_batch():
-    return images, input_labels, output_labels
+# def return_one_batch():
+#     return images, input_labels, output_labels
 
-train_labels, test_labels = split_dataset(label_file, test_size = 0.2, shuffle = True)
+import pickle
+# train_labels, test_labels = split_dataset(label_file, test_size = 0.2, shuffle = True)
+#
+with open('test_labels.pkl', 'wb') as f:
+    pickle.dump(test_labels, f)
 
-train_dataset = HangulOCRDataset(img_dir = img_dir, labels = train_labels, transform = transform)
-test_dataset = HangulOCRDataset(img_dir = img_dir, labels = test_labels, transform = transform)
+with open('test_labels.pkl', 'rb') as f:
+    test_labels = pickle.load(f)
 
-train_loader = DataLoader(train_dataset, batch_size = 32, shuffle = True, collate_fn = lambda batch: collate_fn(batch, 53))
-test_loader = DataLoader(test_dataset, batch_size = 32, shuffle = True, collate_fn = lambda batch: collate_fn(batch, 53))
+print(test_labels)
 
-images, input_labels, output_labels = next(iter(train_loader))
-
+# train_dataset = HangulOCRDataset(img_dir = img_dir, labels = train_labels, transform = transform)
+# test_dataset = HangulOCRDataset(img_dir = img_dir, labels = test_labels, transform = transform)
+#
+# train_loader = DataLoader(train_dataset, batch_size = 32, shuffle = True, collate_fn = lambda batch: collate_fn(batch, 53))
+# test_loader = DataLoader(test_dataset, batch_size = 32, shuffle = True, collate_fn = lambda batch: collate_fn(batch, 53))
+#
+# images, input_labels, output_labels = next(iter(train_loader))
+#
