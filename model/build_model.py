@@ -83,24 +83,24 @@ def model_size_in_MB(model):
     model_size_mb = param_size / (1024 ** 2)
     print("Model size in MB: {}".format(model_size_mb))
 
-images, input_labels, output_labels = return_one_batch()
-
-print("images")
-print(images[0, ...])
-print("input_labels")
-print(input_labels[0, ...])
-print("output_labels")
-print(output_labels[0, ...])
-
-
-# count_model_parameters(model) # 파라미터 수: 7.90M
-# model_size_in_MB(model) # 모델 크기: 30.16MB
-
-try:
-    output = model(images, input_labels)
-    print("성공!")
-    print("output: {}".format(output))
-    print("출력 크기: {}".format(output.size()))
-except Exception as e:
-    print(e)
+# images, input_labels, output_labels = return_one_batch()
 #
+# print("images")
+# print(images[0, ...])
+# print("input_labels")
+# print(input_labels[0, ...])
+# print("output_labels")
+# print(output_labels[0, ...])
+#
+#
+# # count_model_parameters(model) # 파라미터 수: 7.90M
+# # model_size_in_MB(model) # 모델 크기: 30.16MB
+#
+# try:
+#     output = model(images, input_labels)
+#     print("성공!")
+#     print("output: {}".format(output))
+#     print("출력 크기: {}".format(output.size()))
+# except Exception as e:
+#     print(e)
+# #

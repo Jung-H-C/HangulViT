@@ -30,7 +30,6 @@ class MultiHeadAttention(nn.Module):
 
         if mask is not None:
             scores = scores.masked_fill(mask == 0, -1e9) # mask가 0인 부분을 -inf로 채움
-            print("mask done")
         attention_prob = F.softmax(scores, dim=-1)
 
         if dropout is not None:

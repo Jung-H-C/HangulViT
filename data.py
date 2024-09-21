@@ -5,15 +5,12 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, transforms
+from torchvision import datasets
 from PIL import Image
+from model.model.config import *
 
 from Vocabulary import *
 
-transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((0.5, ), (0.5, ))
-])
 
 def collate_fn(batch, pad_idx):
     # pad_Sequence를 추가하는 함수
@@ -27,8 +24,11 @@ def collate_fn(batch, pad_idx):
 
     return images, input_labels_padded, output_labels_padded
 
+def my_collate_fn(batch):
+    return collate_fn(batch, PAD_TOKEN)
+
 class HangulOCRDataset(Dataset):
-    def __init__(self, img_dir, labels, transform = None):
+    def __init__(self, img_dir, labels, transform):
         self.img_dir = img_dir
         self.labels = labels
         self.vocabulary = Vocabulary()
@@ -50,8 +50,8 @@ class HangulOCRDataset(Dataset):
 
         return image, input_label, output_label
 
-def return_one_batch():
-    return images, input_labels, output_labels
+# def return_one_batch():
+#     return images, input_labels, output_labels
 
 
 # train_dataset = HangulOCRDataset(img_dir = img_dir, labels = train_labels, transform = transform)

@@ -19,18 +19,15 @@ class HangulViT(nn.Module):
         self.generator = generator
 
     def encode(self, image):
-        print('from forward: encode function start')
         return self.encoder(image)
 
     def decode(self, embedded_label, encoder_out, self_mask, cross_mask):
-        print('from forward: decode function start')
         return self.decoder(embedded_label, encoder_out, self_mask, cross_mask)
 
     def make_pad_mask(self, query, pad_idx=53):
         # query: [batch_num, query_seq_len]
         # key: [batch_num, key_seq_len]
 
-        print('make_pad_mask function start')
         batch_num, query_seq_len = query.size()
 
         key_mask = (query != pad_idx).unsqueeze(1).unsqueeze(2)
@@ -50,7 +47,6 @@ class HangulViT(nn.Module):
         return mask
 
     def make_subsequent_mask(self, query):
-        print('make_subsequent_mask function start')
         query_seq_len = query.size(1)
 
         tril = np.tril(np.ones((query_seq_len, query_seq_len)), k=0).astype(np.uint8)
@@ -58,16 +54,13 @@ class HangulViT(nn.Module):
         return mask
 
     def make_self_attn_mask(self, input):
-        print('make_self_attn_mask function start')
         pad_mask = self.make_pad_mask(input)
         subsequent_mask = self.make_subsequent_mask(input)
         mask = pad_mask & subsequent_mask
-        print('make_self_attn_mask_fin')
         return mask
 
     def make_cross_attn_mask(self, query, pad_idx = 53, num_feature = 121):
         # return: [batch_num, 1, 12, 121]
-        print('make_cross_attn_mask function start')
         batch_num = query.size(0)
         query_seq_len = query.size(1)
 

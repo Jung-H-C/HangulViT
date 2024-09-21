@@ -1,10 +1,12 @@
 import os, sys, time
 import logging
+import pickle
 
 import torch
 from torch import nn, optim
 from metrics.char_error_rate import char_level_accuracy
 from model.config import *
+from data import *
 
 from build_model import build_model
 
@@ -28,6 +30,10 @@ def train(model, data_loader, optimizer, criterion, epoch, checkpoint_dir):
         optimizer.step()
 
         epoch_loss += loss.item()
+
+        if idx % 100 == 0:
+            logging.info(f'Epoch [{epoch}], Batch [{idx}/{len(data_loader)}], Loss: {loss.item():.4f}')
+
     num_samples = idx + 1
 
     if checkpoint_dir:
@@ -59,13 +65,18 @@ def evaluate(model, data_loader, criterion):
             loss = criterion(y_hat, y_gt)
 
             epoch_loss += loss.item()
-            CER = char_level_accuracy(y_hat, y_gt, PAD_TOKEN)
-            total_cer.append(CER)
-        num_samples = idx+1
+            cer = char_level_accuracy(y_hat, y_gt, PAD_TOKEN)
+            total_cer.append(cer)
+
+            if idx % 100 == 0:
+                logging.info(f'Batch [{idx}/{len(data_loader)}], Loss: {loss.item():.4f}')
+
+        num_samples = idx + 1
 
     loss_avr = epoch_loss / num_samples
     cer = sum(total_cer) / len(total_cer)
     return loss_avr, cer
+
 
 
 def main():
@@ -78,8 +89,38 @@ def main():
     model.apply(initialize_weights)
 
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY, eps=ADAM_EPS)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer = optimizer, verbose = True, factor = SCHEDULER_FACTOR, patience = SCHEDULER_PATIENCE)
+    # scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer = optimizer, verbose = True, factor = SCHEDULER_FACTOR, patience = SCHEDULER_PATIENCE)
 
     criterion = nn.CrossEntropyLoss(ignore_index=PAD_TOKEN)
 
-    train_iter, valid_iter, test_iter =
+    with open('train_labels.pkl', 'rb') as f:
+        train_labels = pickle.load(f)
+
+    with open('valid_labels.pkl', 'rb') as f:
+        valid_labels = pickle.load(f)
+
+    with open('test_labels.pkl', 'rb') as f:
+        test_labels = pickle.load(f)
+
+    train_dataset = HangulOCRDataset(img_dir = IMG_DIR, labels = train_labels, transform = TRANSFORM)
+    valid_dataset = HangulOCRDataset(img_dir = IMG_DIR, labels = valid_labels, transform = TRANSFORM)
+    test_dataset = HangulOCRDataset(img_dir = IMG_DIR, labels = test_labels, transform = TRANSFORM)
+
+    train_loader = DataLoader(train_dataset, batch_size = BATCH_SIZE, shuffle = True, collate_fn = my_collate_fn, num_workers = 6 )
+    valid_loader = DataLoader(valid_dataset, batch_size = BATCH_SIZE, shuffle = True, collate_fn = my_collate_fn, num_workers = 6)
+    test_loader = DataLoader(test_dataset, batch_size = BATCH_SIZE, shuffle = True, collate_fn = my_collate_fn, num_workers = 6)
+
+    for epoch in range(NUM_EPOCHS):
+        logging.info(f'Epoch {epoch}')
+        train_loss = train(model, train_loader, optimizer, criterion, epoch, CHECKPOINT_DIR)
+        logging.info(f'Train Loss: {train_loss}')
+        valid_score, valid_cer = evaluate(model, valid_loader, criterion)
+        logging.info(f'Valid Score: {valid_score}, CER Score: {valid_cer}')
+
+    test_loss, test_cer = evaluate(model, test_loader, criterion)
+    logging.info(f'Test Loss: {test_loss}, Test CER Score: {test_cer}')
+
+if __name__ == '__main__':
+    torch.manual_seed(0)
+    logging.basicConfig(level = logging.INFO)
+    main()
