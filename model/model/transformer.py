@@ -4,7 +4,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from model.embedding.embedding import JamoEmbedding
 from model.model.encoder import CNNEncoder
-from data import return_one_batch
 
 
 class HangulViT(nn.Module):

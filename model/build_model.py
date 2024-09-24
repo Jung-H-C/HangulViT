@@ -9,7 +9,7 @@ from model.layer.position_feed_forward import PositionWiseFeedForwardLayer
 from model.decoder import Decoder
 from model.encoder import CNNEncoder
 from model.transformer import HangulViT
-from data import return_one_batch
+
 
 random_image = torch.randn(32, 1, 360, 360) # image
 random_input = torch.randint(51, 54, (32, 12)) # label (char_to_index 처리 되어있음)
@@ -70,7 +70,7 @@ def build_model():
 
 # model = HangulViT(input_embed = JamoEmbedding, encoder = CNNEncoder,
 #                   decoder = Decoder, embedding_dim = 512, vocab_size = 54).cuda()
-model = build_model()
+# model = build_model()
 
 def count_model_parameters(model):
     total_params = sum(p.numel() for p in model.parameters())

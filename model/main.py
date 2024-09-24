@@ -106,9 +106,9 @@ def main():
     valid_dataset = HangulOCRDataset(img_dir = IMG_DIR, labels = valid_labels, transform = TRANSFORM)
     test_dataset = HangulOCRDataset(img_dir = IMG_DIR, labels = test_labels, transform = TRANSFORM)
 
-    train_loader = DataLoader(train_dataset, batch_size = BATCH_SIZE, shuffle = True, collate_fn = my_collate_fn, num_workers = 6 )
-    valid_loader = DataLoader(valid_dataset, batch_size = BATCH_SIZE, shuffle = True, collate_fn = my_collate_fn, num_workers = 6)
-    test_loader = DataLoader(test_dataset, batch_size = BATCH_SIZE, shuffle = True, collate_fn = my_collate_fn, num_workers = 6)
+    train_loader = DataLoader(train_dataset, batch_size = BATCH_SIZE, shuffle = True, collate_fn = my_collate_fn, num_workers = 1)
+    valid_loader = DataLoader(valid_dataset, batch_size = BATCH_SIZE, shuffle = True, collate_fn = my_collate_fn, num_workers = 1)
+    test_loader = DataLoader(test_dataset, batch_size = BATCH_SIZE, shuffle = True, collate_fn = my_collate_fn, num_workers = 1)
 
     for epoch in range(NUM_EPOCHS):
         logging.info(f'Epoch {epoch}')

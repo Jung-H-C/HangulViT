@@ -1,4 +1,5 @@
 import torch.nn as nn
+import torch
 
 
 def flatten_features(x):
@@ -10,7 +11,7 @@ def flatten_features(x):
 
 
 class CNNEncoder(nn.Module):
-    def __init__(self):
+    def __init__(self, embed_dim = 512, num_patches = 121):
         super(CNNEncoder, self).__init__()
         # input_size: [batch_size, 1, 360, 360]
         # desired_output_size: [batch_size, 121, 512]
@@ -43,13 +44,18 @@ class CNNEncoder(nn.Module):
             nn.MaxPool2d(kernel_size=4, stride=4) # [batch_size, 512, 11, 11]
         )
 
+        self.pos_embedding = nn.Parameter(torch.rand(1, num_patches, embed_dim))
+
     def forward(self, image):
         out = self.conv1(image)
         out = self.conv2(out)
         out = self.conv3(out)
         out = self.conv4(out)
 
-        return flatten_features(out) # [batch_size, 121, 512]
+        features = flatten_features(out)
+        features += self.pos_embedding[:, :features.size(1), :]
+
+        return features # [batch_size, 121, 512]
 
 
 
